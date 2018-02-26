@@ -12,12 +12,8 @@ set nocompatible " deshabilita la compatibilidad con vi
 set history=1000 " aumenta el historial
 
 "===========================
-"2. PLUGINS
+"2. VIM-PLUG - PLUGINS
 "===========================
-"
-"        ===========================
-"        2.1. VIM-PLUG
-"        ===========================
 
 call plug#begin('~/.vim/plugged/')
 
@@ -28,71 +24,19 @@ Plug 'ap/vim-buftabline' " abre tabs por cada archivo editado
 Plug 'scrooloose/nerdcommenter' " comenta las lineas ,cc
 Plug 'scrooloose/nerdtree' " un arbol para buscar archivos ,nt
 Plug 'vim-python/python-syntax'
-Plug 'vim-syntastic/syntastic'
+" Plug 'vim-syntastic/syntastic'
 Plug 'nvie/vim-flake8'
 Plug 'altercation/vim-colors-solarized'
-Plug 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-Plug 'majutsushi/tagbar'
-" Plug 'davidhalter/jedi-vim'
-Plug 'klen/python-mode'
-"Plug 'seletskiy/vim-autosurround'
-Plug 'jiangmiao/auto-pairs'
+" Plug 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Plug 'jiangmiao/auto-pairs' " cierra abre comillas
+Plug 'maralla/validator.vim'
+" Plug 'randomekek/vim-lcomplete'
+Plug 'lifepillar/vim-mucomplete'
+Plug 'itchyny/lightline.vim'
+
+
 " Initialize plugin system
 call plug#end()
-
-"        =====================
-"        2.2. BUNDLE
-"        =====================
-
-filetype off
-
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
- 
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-" Plugin 'seletskiy/vim-autosurround'
-    
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-" Plugin 'tpope/vim-fugitive'
-" plugin from http://vim-scripts.org/vim/scripts.html
-" Plugin 'L9'
-" Git plugin not hosted on GitHub
-" Plugin 'git://git.wincent.com/command-t.git'
-" git repos on your local machine (i.e. when working on your own plugin)
-" Plugin 'file:///home/gmarik/path/to/plugin'
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Avoid a name conflict with L9
-" Plugin 'user/L9', {'name': 'newL9'}
- 
-" All of your Plugins must be added before the following line
-
-
-" Plugin 'tpope/vim-surround'
-" Plugin 'valloric/youcompleteme'
-
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
-"
-
 
 "===========================
 "3. CONFIGURACION DE
@@ -103,13 +47,15 @@ set noswapfile "el swap ya casi el del pasado
 set nobackup "hay mejores maneras de hacer backup (ver GIT
 
 " tabs and spaces handling
-set expandtab
+" set expandtab
 set tabstop=4
 set softtabstop=4 " remueve el pseudo-TAB
 set shiftwidth=4 " el espacio del autoindentado
 set textwidth=79
 set autoindent " siempre activo auto indentado
 set fileformat=unix
+set modeline
+set colorcolumn=80
 
 " utf8 soporte
 set encoding=utf-8 " siempre usar unicode( windows :/
@@ -131,9 +77,6 @@ nmap <Leader>nt :NERDTreeToggle<cr>
 set hidden
 nnoremap <C-N> :bprev<CR>
 nnoremap <C-M> :bnext<CR>
-
-"tagabar - mapeo
-nmap <F8> :TagbarToggle<CR>
 
 
 "===============================================
@@ -172,7 +115,7 @@ set completeopt-=preview
 set background=dark
 colorscheme solarized
 set noshowmode
-
+let g:lightline = {'colorscheme': 'seoul256',}
 
 " when scrolling, keep cursor 3 lines away from screen border
 set scrolloff=3
@@ -181,18 +124,10 @@ set scrolloff=3
 " (complete only the common part, list the options that match)
 set wildmode=list:longest
 
-"  py-Mode ---------------------
-
-let g:pymode_python = 'python3'
-
 " Jedi-vim ------------------------------
-
-" let g:jedi#auto_initialization = 0
-" let g:jedi#show_call_signature = 1
 
 " All these mappings work only for python code:
 " Go to definition
-
 " let g:jedi#goto_command = ',d'
 " Find ocurrences
 " let g:jedi#usages_command = ',o'
@@ -201,19 +136,30 @@ let g:pymode_python = 'python3'
 " Go to definition in new tab
 " nmap ,D :tab split<CR>:call jedi#goto()<CR>
 
+"----- mucomplete -------------
+set completeopt+=menuone
+set completeopt+=noselect
+set noshowmode shortmess+=c
+set completeopt-=preview
+set completeopt+=longest,noinsert
+let g:jedi#popup_on_dot = 0
+
+let g:mucomplete#enable_auto_at_startup = 1
+
 " Autoclose ------------------------------
 
 " Fix to let ESC work as espected with Autoclose plugin
-" let g:AutoClosePumvisible = {"ENTER": "\<C-Y>", "ESC": "\<ESC>"}
+let g:AutoClosePumvisible = {"ENTER": "\<C-Y>", "ESC": "\<ESC>"}
 
-" utf8 soporte
-set encoding=utf-8
+" -- validator-------------------------------
+let g:validator_python_checkers = ['flake8']
+let g:validator_permament_sign = 1
 
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
